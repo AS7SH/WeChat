@@ -1,4 +1,4 @@
-import { config, z } from "zod";
+import { z } from "zod";
 import { sendResponse } from "../util/sendResponse.js";
 
 const signupSchema = z.object({
@@ -10,7 +10,6 @@ const signupSchema = z.object({
             /^[a-zA-Z][a-zA-Z0-9_]*$/,
             "Username must start with a letter and contain only letters, numbers, and underscores",
         ),
-
     name: z
         .string()
         .min(3, "Name must be at least 5 characters")
@@ -19,13 +18,15 @@ const signupSchema = z.object({
             /^[a-zA-Z]+(?:[ ._][a-zA-Z]+)*$/,
             "Name doesnt match the pattern",
         ),
-
     email: z.email("Invalid email address"),
-
     password: z
         .string()
-        .min(5, "Password must be at least 5 characters")
-        .max(20, "Password must be less than 20 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .max(20, "Password must be less than 20 characters")
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#])[A-Za-z\d@$!%*?&_#]{8,}$/,
+            "Password didnt match the pattern",
+        ),
 });
 
 const signinSchema = z.object({
@@ -44,8 +45,12 @@ const signinSchema = z.object({
         ),
     password: z
         .string()
-        .min(5, "Password must be at least 5 characters")
-        .max(20, "Password must be less than 20 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .max(20, "Password must be less than 20 characters")
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#])[A-Za-z\d@$!%*?&_#]{8,}$/,
+            "Password didnt match the pattern",
+        ),
 });
 
 const forgotPasswordSchema = z.object({
@@ -55,19 +60,31 @@ const forgotPasswordSchema = z.object({
 const resetPasswordSchema = z.object({
     password: z
         .string()
-        .min(5, "Password must be at least 5 characters")
-        .max(20, "Password must be less than 20 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .max(20, "Password must be less than 20 characters")
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#])[A-Za-z\d@$!%*?&_#]{8,}$/,
+            "Password didnt match the pattern",
+        ),
 });
 
 const ChangePasswordSchema = z.object({
     currentPassword: z
         .string()
-        .min(5, "Password must be at least 5 characters")
-        .max(20, "Password must be less than 20 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .max(20, "Password must be less than 20 characters")
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#])[A-Za-z\d@$!%*?&_#]{8,}$/,
+            "Password didnt match the pattern",
+        ),
     newPassword: z
         .string()
-        .min(5, "Password must be at least 5 characters")
-        .max(20, "Password must be less than 20 characters"),
+        .min(8, "Password must be at least 8 characters")
+        .max(20, "Password must be less than 20 characters")
+        .regex(
+            /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#])[A-Za-z\d@$!%*?&_#]{8,}$/,
+            "Password didnt match the pattern",
+        ),
 });
 
 export const checkSignupFormat = (req, res, next) => {
