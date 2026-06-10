@@ -42,8 +42,6 @@ export const signup = async (req, res) => {
             password: undefined,
         };
 
-        await sendOTPEmail(user);
-
         return sendResponse(
             res,
             201,

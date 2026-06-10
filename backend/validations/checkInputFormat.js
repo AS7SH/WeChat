@@ -12,7 +12,7 @@ const signupSchema = z.object({
         ),
     name: z
         .string()
-        .min(3, "Name must be at least 5 characters")
+        .min(5, "Name must be at least 5 characters")
         .max(30, "Name must be less than 30 characters")
         .regex(
             /^[a-zA-Z]+(?:[ ._][a-zA-Z]+)*$/,
