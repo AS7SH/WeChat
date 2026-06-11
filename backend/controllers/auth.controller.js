@@ -173,7 +173,7 @@ export const forgotPassword = async (req, res) => {
             return sendResponse(res, 400, false, "User not Found");
         }
 
-        const resetPassToken = crypto.randomBytes(20).toString("hex");
+        const resetPassToken = getOTP();
         const resetPassTokenExpiresAt = Date.now() + 1 * 60 * 60 * 1000;
 
         user.resetPassToken = resetPassToken;
@@ -196,34 +196,32 @@ export const forgotPassword = async (req, res) => {
 };
 
 export const resetPassword = async (req, res) => {
-    const { password } = req.body;
-    const { token } = req.params;
+    const { code, email, password } = req.body;
 
     try {
-        const user = await User.findOne({ resetPassToken: token });
+        const user = await User.findOne({ email });
 
         console.log(user);
-        console.log(token);
 
         if (!user) {
-            return sendResponse(res, 400, false, "Invalid token");
+            return sendResponse(res, 400, false, "User doesnt exist");
         }
 
-        if (!user.resetPassToken || user.resetPassToken !== token) {
-            return sendResponse(res, 400, false, "Invalid token");
+        if (!user.resetPassToken || user.resetPassToken !== code) {
+            return sendResponse(res, 400, false, "Invalid code");
         }
 
         if (
             user.resetPassTokenExpiresAt &&
             user.resetPassTokenExpiresAt < new Date()
         ) {
-            return sendResponse(res, 400, false, "Reset Token has expired");
+            return sendResponse(res, 400, false, "Reset Code has expired");
         }
 
         const hashPassword = await bcrypt.hash(password, 10);
 
         user.password = hashPassword;
-        user.resetToken = undefined;
+        user.resetPassToken = undefined;
         user.resetPassTokenExpiresAt = undefined;
 
         await user.save();

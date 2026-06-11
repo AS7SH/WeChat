@@ -1,10 +1,14 @@
-import { useEffect } from "react";
-import { useAuthStore } from "./store/authStore.jsx";
+import Navbar from "./components/Navbar";
 
 const App = () => {
     return (
         <>
-            <main className="min-h-screen bg-bg"></main>
+            <div className="min-h-screen bg-bg">
+                <Navbar />
+                <main className=" flex justify-center items-center text-5xl text-text font-medium bg-bg">
+                    Application Will be added soon
+                </main>
+            </div>
         </>
     );
 };

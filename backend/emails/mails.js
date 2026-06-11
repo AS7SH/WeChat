@@ -21,17 +21,16 @@ export const sendOTPEmail = async (user) => {
 export const sendForgotPassEmail = async (user) => {
     const HTML_Template = HTML_ForgotPass_Email(
         user.username,
-        "Link to reset Password",
+        "OTP to reset Password",
         "1 Hour",
-        "Reset Link",
-        `${process.env.CLIENT_URI}/reset-pass/${user.resetPassToken}`,
+        user.resetPassToken,
     );
     console.log(`${process.env.CLIENT_URI}/reset-pass/${user.resetPassToken}`);
     const trasporter = createTrasporter();
 
     await trasporter.sendMail({
         to: user.email,
-        subject: "Link to Reset Password",
+        subject: "OTP to Reset Password",
         html: HTML_Template,
     });
 };

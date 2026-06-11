@@ -250,7 +250,7 @@ const Signup = () => {
                         <button
                             type="button"
                             onClick={() => navigate("/auth/login")}
-                            className="font-medium text-primary hover:underline"
+                            className="font-medium cursor-pointer text-primary "
                         >
                             Login
                         </button>

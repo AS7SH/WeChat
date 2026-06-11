@@ -1,11 +1,20 @@
 import { useRef, useState } from "react";
+import { useAuthStore } from "../../store/authStore";
+import { toast } from "react-toastify";
+import { HelpCircle, Loader } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const [otpSent, setOtpSent] = useState(false);
-
+    const [password, setPassword] = useState("");
     const inputRefs = useRef([]);
+    const navigate = useNavigate();
+    const passwordRegex =
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&_#])[A-Za-z\d@$!%*?&_#]{8,}$/;
+    const canSubmit = passwordRegex.test(password);
+    const { forgotPassword, isLoading, error, resetPassword } = useAuthStore();
 
     const handleOtpChange = (index, value) => {
         if (!/^\d*$/.test(value)) return;
@@ -72,14 +81,15 @@ const ForgotPassword = () => {
 
         try {
             // await forgotPassword(email)
-
+            const response = await forgotPassword(email);
+            toast.success(response.message);
             setOtpSent(true);
 
             setTimeout(() => {
                 inputRefs.current[0]?.focus();
             }, 100);
-        } catch (error) {
-            console.error(error);
+        } catch (err) {
+            toast.error(error);
         }
     };
 
@@ -88,16 +98,16 @@ const ForgotPassword = () => {
 
         const code = otp.join("");
 
-        if (code.length !== 6) return;
+        if (code.length !== 6) {
+            return toast("OTP should be of length 6");
+        }
 
         try {
-            console.log({
-                email,
-                otp: code,
-            });
-
-            // verify otp api
-        } catch (error) {
+            const response = await resetPassword(email, code, password);
+            toast.success(response.message);
+            navigate("/auth/login");
+        } catch (err) {
+            toast.error(error);
             console.error(error);
         }
     };
@@ -144,7 +154,11 @@ const ForgotPassword = () => {
                             disabled={!email.trim()}
                             className=" h-12 w-full rounded-full border border-border bg-transparent font-medium text-text transition-colors hover:bg-bg disabled:cursor-not-allowed disabled:opacity-50 "
                         >
-                            Send Verification Code
+                            {isLoading ? (
+                                <Loader className="mx-auto size-8 animate-spin" />
+                            ) : (
+                                "Send Verification Code"
+                            )}
                         </button>
                     </>
                 ) : (
@@ -193,36 +207,129 @@ const ForgotPassword = () => {
                             </div>
                         </div>
 
-                        <button
-                            type="submit"
-                            className=" h-12 w-full rounded-full bg-primary font-medium text-white transition-opacity hover:opacity-90 "
-                        >
-                            Verify & Continue
-                        </button>
+                        <div>
+                            <div className="mb-2 flex items-center gap-2">
+                                <label
+                                    htmlFor="password"
+                                    className="block text-sm font-medium text-text"
+                                >
+                                    Password
+                                </label>
+
+                                {/* Question Mark Icon with Tooltip */}
+                                <div className="group relative flex items-center">
+                                    <HelpCircle className="size-4 cursor-help text-text-muted transition-colors hover:text-text" />
+
+                                    <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-2 hidden w-64 -translate-x-1/2 rounded-xl border border-border bg-bg-light p-3 shadow-lg group-hover:block">
+                                        <p className="mb-2 text-xs text-text-muted">
+                                            Password requirements:
+                                        </p>
+
+                                        <ul className="space-y-1 text-xs">
+                                            <li
+                                                className={
+                                                    password.length >= 8
+                                                        ? "text-green-500"
+                                                        : "text-text-muted"
+                                                }
+                                            >
+                                                ✓ At least 8 characters
+                                            </li>
+
+                                            <li
+                                                className={
+                                                    /[A-Z]/.test(password)
+                                                        ? "text-green-500"
+                                                        : "text-text-muted"
+                                                }
+                                            >
+                                                ✓ One uppercase letter
+                                            </li>
+
+                                            <li
+                                                className={
+                                                    /[a-z]/.test(password)
+                                                        ? "text-green-500"
+                                                        : "text-text-muted"
+                                                }
+                                            >
+                                                ✓ One lowercase letter
+                                            </li>
+
+                                            <li
+                                                className={
+                                                    /\d/.test(password)
+                                                        ? "text-green-500"
+                                                        : "text-text-muted"
+                                                }
+                                            >
+                                                ✓ One number
+                                            </li>
+
+                                            <li
+                                                className={
+                                                    /[@$!%*?&_#]/.test(password)
+                                                        ? "text-green-500"
+                                                        : "text-text-muted"
+                                                }
+                                            >
+                                                ✓ One special character
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <input
+                                id="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                type="password"
+                                placeholder="Create a password"
+                                className="h-12 w-full rounded-xl border border-border bg-transparent px-4 text-text outline-none transition-colors focus:border-primary"
+                            />
+                        </div>
+
+                        {/* Button */}
+                        <div className="mt-6">
+                            <button
+                                type="submit"
+                                aria-disabled={!canSubmit}
+                                onClick={handleSubmit}
+                                className={`mt-2 h-12 w-full rounded-full cursor-pointer font-medium text-white transition-opacity ${
+                                    canSubmit
+                                        ? "bg-primary hover:opacity-90"
+                                        : "cursor-not-allowed bg-gray-500 opacity-60"
+                                }`}
+                            >
+                                Change Password
+                            </button>
+                        </div>
 
                         <div className="text-center">
                             <p className="text-sm text-text-muted">
-                                Didn't receive the code?
+                                Didn't receive the code?{" "}
+                                <button
+                                    type="button"
+                                    disabled={isLoading}
+                                    onClick={handleSendOtp}
+                                    className=" mt-2 text-sm cursor-pointer font-medium text-primary"
+                                >
+                                    Resend Code
+                                </button>
                             </p>
-
-                            <button
-                                type="button"
-                                className=" mt-2 text-sm font-medium text-primary hover:underline "
-                            >
-                                Resend Code
-                            </button>
                         </div>
                     </>
                 )}
             </form>
 
             <div className="mt-6 border-t border-border pt-6 text-center">
-                <button
-                    type="button"
-                    className=" text-sm font-medium text-text hover:text-primary "
+                <Link
+                    to={"/auth/login"}
+                    className=" text-sm cursor-pointer font-medium text-text hover:text-primary "
                 >
                     Back to Login
-                </button>
+                </Link>
             </div>
         </div>
     );

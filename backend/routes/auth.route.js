@@ -32,7 +32,7 @@ router.post("/verify-email", getUserFromToken, verifyEmail);
 router.post("/resend-verification", getUserFromToken, resendVerification);
 
 router.post("/forgot-password", checkforgotPasswordFormat, forgotPassword);
-router.post("/reset-password/:token", checkResetPasswordFormat, resetPassword);
+router.post("/reset-password", checkResetPasswordFormat, resetPassword);
 
 router.post(
     "/change-password",

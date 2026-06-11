@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useAuthStore } from "../../store/authStore.jsx";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Loader } from "lucide-react";
 
 const Login = () => {
@@ -75,13 +75,13 @@ const Login = () => {
                             Password
                         </label>
 
-                        <button
-                            type="button"
-                            onClick={() => navigate("/auth/forgot-password")}
-                            className=" text-sm text-primary hover:underline "
+                        <Link
+                            to={"/auth/forgot-password"}
+                            className="text-sm font-medium text-primary"
+                            tabIndex={-1}
                         >
                             Forgot password?
-                        </button>
+                        </Link>
                     </div>
 
                     <input
@@ -103,7 +103,7 @@ const Login = () => {
                 <button
                     type="submit"
                     onClick={handleSubmit}
-                    className=" h-12 w-full rounded-full bg-primary font-medium text-white transition-opacity hover:opacity-90 "
+                    className=" h-12 w-full rounded-full cursor-pointer bg-primary font-medium text-white transition-opacity hover:opacity-90 "
                 >
                     {isLoading ? (
                         <Loader className="mx-auto size-8 animate-spin" />
@@ -117,13 +117,13 @@ const Login = () => {
             <div className="mt-8 border-t border-border pt-6 text-center">
                 <p className="text-sm text-text-muted">
                     Don't have an account?{" "}
-                    <button
-                        type="button"
-                        onClick={() => navigate("/auth/signup")}
-                        className="font-medium text-primary hover:underline"
+                    <Link
+                        to={"/auth/signup"}
+                        className="font-medium text-primary"
+                        tabIndex={-1}
                     >
                         Create Account
-                    </button>
+                    </Link>
                 </p>
             </div>
         </div>

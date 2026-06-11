@@ -1,15 +1,12 @@
 import { useRef, useState } from "react";
 import { toast } from "react-toastify";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../store/authStore.jsx";
 
 const EmailVerification = () => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
-
     const inputRefs = useRef([]);
-
     const navigate = useNavigate();
-
     const { verifyEmail, error, user, resendVerificationCode, isLoading } =
         useAuthStore();
 
@@ -60,7 +57,6 @@ const EmailVerification = () => {
             toast.success(response.message);
         } catch (e) {
             toast.error(error);
-            console.error(error);
         }
     };
 
@@ -68,13 +64,16 @@ const EmailVerification = () => {
         e.preventDefault();
         const code = otp.join("");
 
+        if (code.length != 6) {
+            return toast("OTP should be of length 6");
+        }
+
         try {
             const response = await verifyEmail(code);
             toast.success(response.message);
             navigate("/");
         } catch (e) {
             toast.error(error);
-            console.error(error);
         }
     };
 
@@ -117,26 +116,26 @@ const EmailVerification = () => {
                 {/* Verify Button */}
                 <button
                     type="submit"
-                    className=" h-12 w-full rounded-full bg-primary font-medium text-white transition-opacity hover:opacity-90 "
+                    onClick={handleSubmit}
+                    className=" h-12 w-full cursor-pointer rounded-full bg-primary font-medium text-white transition-opacity hover:opacity-90 "
                 >
                     Verify Email
                 </button>
             </form>
 
             {/* Footer */}
-            <div className="mt-8 text-center">
+            <div className="mt-6 border-t border-border pt-5 text-center">
                 <p className="text-sm text-text-muted">
-                    Didn't receive the code?
+                    Didn't receive the code?{" "}
+                    <button
+                        type="button"
+                        className=" text-sm cursor-pointer font-medium text-primary "
+                        onClick={handleResendCode}
+                        disabled={isLoading}
+                    >
+                        Resend Code
+                    </button>
                 </p>
-
-                <button
-                    type="button"
-                    className=" mt-2 text-sm font-medium text-primary hover:underline "
-                    onClick={handleResendCode}
-                    disabled={isLoading}
-                >
-                    Resend Code
-                </button>
             </div>
         </div>
     );

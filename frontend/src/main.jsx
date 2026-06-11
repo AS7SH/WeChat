@@ -7,7 +7,6 @@ import router from "./routes/router.jsx";
 import { Bounce, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useAuthStore } from "./store/authStore.jsx";
-import LoadingSpinner from "./components/Util/LoadingSpinner.jsx";
 
 const Root = () => {
     const checkAuth = useAuthStore((state) => state.checkAuth);

@@ -51,6 +51,16 @@ const UnverifiedRoute = ({ children }) => {
     return children;
 };
 
+const ForgotPasswordRoute = ({ children }) => {
+    const { isAuthenticated, user } = useAuthStore();
+
+    if (isAuthenticated) {
+        return <Navigate to={"/"} replace />;
+    }
+
+    return children;
+};
+
 const router = createBrowserRouter([
     {
         path: "/",
@@ -82,7 +92,14 @@ const router = createBrowserRouter([
                             </GuestRoute>
                         ),
                     },
-                    { path: "forgot-password", element: <ForgotPassword /> },
+                    {
+                        path: "forgot-password",
+                        element: (
+                            <ForgotPasswordRoute>
+                                <ForgotPassword />
+                            </ForgotPasswordRoute>
+                        ),
+                    },
                     {
                         path: "verify-email",
                         element: (

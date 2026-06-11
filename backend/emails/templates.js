@@ -46,13 +46,7 @@ export const HTML_OTP_Email = (username, heading, duration, title) => {
 `;
 };
 
-export const HTML_ForgotPass_Email = (
-    username,
-    heading,
-    duration,
-    title,
-    link,
-) => {
+export const HTML_ForgotPass_Email = (username, heading, duration, title) => {
     return `
 <!DOCTYPE html>
 <html lang="en">
@@ -85,7 +79,7 @@ export const HTML_ForgotPass_Email = (
       <p>This code is valid for <strong>${duration}</strong>. Please do not share it with anyone.</p>
       
       <p style="text-align:center;">
-        <a style="cursor:pointer" href="${link}" target="_blank" class="verify-btn">${title}</a>
+        <a style="cursor:pointer" class="verify-btn">${title}</a>
       </p>
 
       <p>If you did not request this, you can safely ignore this email.</p>
