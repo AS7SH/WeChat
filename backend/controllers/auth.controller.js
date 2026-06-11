@@ -5,7 +5,6 @@ import bcrypt from "bcryptjs";
 import crypto from "node:crypto";
 import { generateTokenAndSetCookie } from "../util/generateTokenAndSetCookie.js";
 import { sendOTPEmail, sendForgotPassEmail } from "../emails/mails.js";
-import jwt from "jsonwebtoken";
 
 export const signup = async (req, res) => {
     const { username, password, email, name } = req.body;
@@ -41,6 +40,8 @@ export const signup = async (req, res) => {
             ...user._doc,
             password: undefined,
         };
+
+        await sendOTPEmail(user);
 
         return sendResponse(
             res,
@@ -83,7 +84,10 @@ export const verifyEmail = async (req, res) => {
 
         await user.save();
 
-        return sendResponse(res, 200, true, "Email verified successfully");
+        return sendResponse(res, 200, true, "Email verified successfully", {
+            ...user._doc,
+            password: undefined,
+        });
     } catch (error) {
         console.error("Error verifying email:", error);
 
