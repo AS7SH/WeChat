@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import { sendResponse } from "../util/sendResponse.js";
+import { User } from "../models/user.model.js";
 
-export const verifyToken = (req, res, next) => {
+export const protectedRoute = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
@@ -25,7 +26,14 @@ export const verifyToken = (req, res, next) => {
             );
         }
 
-        req.userId = decoded.userId;
+        const user = await User.findById(decoded.userId);
+
+        if (!user) {
+            return sendResponse(res, 400, false, "User not found");
+        }
+
+        req.user = user;
+
         next();
     } catch (error) {
         console.error(`Error : ${error}`);

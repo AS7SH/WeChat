@@ -17,26 +17,26 @@ import {
     checkResetPasswordFormat,
     checkChangePasswordFormat,
 } from "../validations/checkInputFormat.js";
-import { getUserFromToken } from "../util/getUserFromToken.js";
-import { verifyToken } from "../middlewares/verifyToken.js";
+import { protectedRoute } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/check-auth", verifyToken, checkAuth);
+router.get("/check-auth", protectedRoute);
+// router.get("/check-auth", protectedRoute, checkAuth);
 
 router.post("/signup", checkSignupFormat, signup);
 router.post("/login", checkSigninFormat, login);
 router.post("/logout", logout);
 
-router.post("/verify-email", getUserFromToken, verifyEmail);
-router.post("/resend-verification", getUserFromToken, resendVerification);
+router.post("/verify-email", protectedRoute, verifyEmail);
+router.post("/resend-verification", protectedRoute, resendVerification);
 
 router.post("/forgot-password", checkforgotPasswordFormat, forgotPassword);
 router.post("/reset-password", checkResetPasswordFormat, resetPassword);
 
 router.post(
     "/change-password",
-    getUserFromToken,
+    protectedRoute,
     checkChangePasswordFormat,
     changePassword,
 );

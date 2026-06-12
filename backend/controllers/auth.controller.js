@@ -2,7 +2,6 @@ import { User } from "../models/user.model.js";
 import { sendResponse } from "../util/sendResponse.js";
 import { getOTP } from "../util/getOTP.js";
 import bcrypt from "bcryptjs";
-import crypto from "node:crypto";
 import { generateTokenAndSetCookie } from "../util/generateTokenAndSetCookie.js";
 import { sendOTPEmail, sendForgotPassEmail } from "../emails/mails.js";
 

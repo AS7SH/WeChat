@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import { coonectDB } from "./db/connectDB.js";
+import { coonectDB } from "./lib/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
