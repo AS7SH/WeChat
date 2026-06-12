@@ -1,8 +1,8 @@
 import { User } from "../models/user.model.js";
-import { sendResponse } from "../util/sendResponse.js";
-import { getOTP } from "../util/getOTP.js";
+import { sendResponse } from "../lib/utils.js";
+import { getOTP } from "../lib/utils/getOTP.js";
 import bcrypt from "bcryptjs";
-import { generateTokenAndSetCookie } from "../util/generateTokenAndSetCookie.js";
+import { generateTokenAndSetCookie } from "../lib/utils.js";
 import { sendOTPEmail, sendForgotPassEmail } from "../emails/mails.js";
 
 export const signup = async (req, res) => {

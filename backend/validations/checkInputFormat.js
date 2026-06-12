@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { sendResponse } from "../util/sendResponse.js";
+import { sendResponse } from "../lib/utils.js";
 
 const signupSchema = z.object({
     username: z
