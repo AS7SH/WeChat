@@ -32,6 +32,13 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "",
         },
+        about: {
+            type: String,
+            default: "Available",
+        },
+        lastSeen: {
+            type: Date,
+        },
         resetPassToken: String,
         resetPassTokenExpiresAt: Date,
         verificationToken: String,

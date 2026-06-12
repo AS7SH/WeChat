@@ -1,4 +1,5 @@
 import nodemailer from "nodemailer";
+import { ENV } from "../lib/env.js";
 
 export const createTrasporter = () => {
     return nodemailer.createTransport({
@@ -6,8 +7,8 @@ export const createTrasporter = () => {
         port: 587,
         secure: false,
         auth: {
-            user: process.env.SMTP_USER,
-            pass: process.env.SMTP_USER_PASS,
+            user: ENV.SMTP_USER,
+            pass: ENV.SMTP_USER_PASS,
         },
     });
 };

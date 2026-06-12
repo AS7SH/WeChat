@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import { sendResponse } from "../lib/utils.js";
 import { User } from "../models/user.model.js";
+import { ENV } from "../lib/env.js";
 
-export const protectedRoute = async (req, res, next) => {
+export const protectRoute = async (req, res, next) => {
     const token = req.cookies.token;
 
     if (!token) {
@@ -15,7 +16,7 @@ export const protectedRoute = async (req, res, next) => {
     }
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const decoded = jwt.verify(token, ENV.JWT_SECRET);
 
         if (!decoded) {
             return sendResponse(
@@ -26,7 +27,7 @@ export const protectedRoute = async (req, res, next) => {
             );
         }
 
-        const user = await User.findById(decoded.userId);
+        const user = await User.findById(decoded.userId).select("-password");
 
         if (!user) {
             return sendResponse(res, 400, false, "User not found");

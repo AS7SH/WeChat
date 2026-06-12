@@ -1,9 +1,10 @@
 import { User } from "../models/user.model.js";
 import { sendResponse } from "../lib/utils.js";
-import { getOTP } from "../lib/utils/getOTP.js";
+import { getOTP } from "../lib/utils.js";
 import bcrypt from "bcryptjs";
 import { generateTokenAndSetCookie } from "../lib/utils.js";
 import { sendOTPEmail, sendForgotPassEmail } from "../emails/mails.js";
+import cloudinary from "../lib/cloudinary.js";
 
 export const signup = async (req, res) => {
     const { username, password, email, name } = req.body;
@@ -266,12 +267,43 @@ export const changePassword = async (req, res) => {
 
 export const checkAuth = async (req, res) => {
     try {
-        const user = await User.findById(req.userId).select("-password");
-        if (!user) {
-            return sendResponse(res, 400, false, "User not found");
+        return sendResponse(
+            res,
+            200,
+            true,
+            "User successfully authenticated",
+            req.user,
+        );
+    } catch (error) {
+        console.error(`Error: ${error}`);
+        return sendResponse(res, 500, false, "Internal server error");
+    }
+};
+
+export const updateProfilePicture = async (req, res) => {
+    const userId = req.user._id;
+
+    try {
+        const { profilePic } = req.body;
+        if (!profilePic) {
+            return sendResponse(res, 400, false, "Profile picture is required");
         }
 
-        return sendResponse(res, 200, true, "", user);
+        const uploadResponse = await cloudinary.uploader.upload(profilePic);
+
+        const user = await User.findByIdAndUpdate(
+            userId,
+            { profilePic: uploadResponse.secure_url },
+            { new: true },
+        );
+
+        return sendResponse(
+            res,
+            200,
+            true,
+            "Profile Picture updated successfully",
+            user,
+        );
     } catch (error) {
         console.error(`Error: ${error}`);
         return sendResponse(res, 500, false, "Internal server error");

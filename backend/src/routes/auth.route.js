@@ -9,6 +9,7 @@ import {
     resetPassword,
     changePassword,
     checkAuth,
+    updateProfilePicture,
 } from "../controllers/auth.controller.js";
 import {
     checkSignupFormat,
@@ -17,26 +18,27 @@ import {
     checkResetPasswordFormat,
     checkChangePasswordFormat,
 } from "../validations/checkInputFormat.js";
-import { protectedRoute } from "../middlewares/auth.middleware.js";
+import { protectRoute } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
 
-router.get("/check-auth", protectedRoute);
-// router.get("/check-auth", protectedRoute, checkAuth);
+router.get("/check-auth", protectRoute, checkAuth);
 
 router.post("/signup", checkSignupFormat, signup);
 router.post("/login", checkSigninFormat, login);
 router.post("/logout", logout);
 
-router.post("/verify-email", protectedRoute, verifyEmail);
-router.post("/resend-verification", protectedRoute, resendVerification);
+router.post("/verify-email", protectRoute, verifyEmail);
+router.post("/resend-verification", protectRoute, resendVerification);
 
 router.post("/forgot-password", checkforgotPasswordFormat, forgotPassword);
 router.post("/reset-password", checkResetPasswordFormat, resetPassword);
 
+router.put("/profile-picture", protectRoute, updateProfilePicture);
+
 router.post(
     "/change-password",
-    protectedRoute,
+    protectRoute,
     checkChangePasswordFormat,
     changePassword,
 );

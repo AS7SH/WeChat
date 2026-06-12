@@ -25,7 +25,6 @@ export const sendForgotPassEmail = async (user) => {
         "1 Hour",
         user.resetPassToken,
     );
-    console.log(`${process.env.CLIENT_URI}/reset-pass/${user.resetPassToken}`);
     const trasporter = createTrasporter();
 
     await trasporter.sendMail({

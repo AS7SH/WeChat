@@ -10,6 +10,7 @@ import { useAuthStore } from "./store/authStore.jsx";
 
 const Root = () => {
     const checkAuth = useAuthStore((state) => state.checkAuth);
+    const { user } = useAuthStore();
 
     useEffect(() => {
         checkAuth();
