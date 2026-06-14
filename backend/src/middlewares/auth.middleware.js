@@ -1,43 +1,31 @@
 import jwt from "jsonwebtoken";
-import { sendResponse } from "../lib/utils.js";
 import { User } from "../models/user.model.js";
-import { ENV } from "../lib/env.js";
+import { ENV } from "../lib/config/env.js";
+import { HTTPSTATUS } from "../lib/http.js";
 
 export const protectRoute = async (req, res, next) => {
-    const token = req.cookies.token;
+    const token = req.cookies.accessToken;
 
     if (!token) {
-        return sendResponse(
-            res,
-            401,
-            false,
-            "Unauthorized - Token not provided",
+        throw new AppError("Token not found", HTTPSTATUS.BAD_REQUEST);
+    }
+
+    const decoded = jwt.verify(token, ENV.JWT_SECRET);
+
+    if (!decoded) {
+        throw new AppError(
+            "Unauthorized - Invalid token",
+            HTTPSTATUS.BAD_REQUEST,
         );
     }
 
-    try {
-        const decoded = jwt.verify(token, ENV.JWT_SECRET);
+    const user = await User.findById(decoded.userId).select("-password");
 
-        if (!decoded) {
-            return sendResponse(
-                res,
-                401,
-                false,
-                "Unauthorized - Invalid Token",
-            );
-        }
-
-        const user = await User.findById(decoded.userId).select("-password");
-
-        if (!user) {
-            return sendResponse(res, 400, false, "User not found");
-        }
-
-        req.user = user;
-
-        next();
-    } catch (error) {
-        console.error(`Error : ${error}`);
-        return sendResponse(res, 500, false, "Internal server Error", error);
+    if (!user) {
+        throw new AppError("User not found", HTTPSTATUS.BAD_REQUEST);
     }
+
+    req.user = user;
+
+    next();
 };

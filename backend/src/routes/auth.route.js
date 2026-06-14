@@ -9,7 +9,6 @@ import {
     resetPassword,
     changePassword,
     checkAuth,
-    updateProfilePicture,
 } from "../controllers/auth.controller.js";
 import {
     checkSignupFormat,
@@ -17,7 +16,7 @@ import {
     checkforgotPasswordFormat,
     checkResetPasswordFormat,
     checkChangePasswordFormat,
-} from "../validations/checkInputFormat.js";
+} from "../validators/auth.validator.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -34,7 +33,7 @@ router.post("/resend-verification", protectRoute, resendVerification);
 router.post("/forgot-password", checkforgotPasswordFormat, forgotPassword);
 router.post("/reset-password", checkResetPasswordFormat, resetPassword);
 
-router.put("/profile-picture", protectRoute, updateProfilePicture);
+// router.put("/profile-picture", protectRoute, updateProfilePicture);
 
 router.post(
     "/change-password",

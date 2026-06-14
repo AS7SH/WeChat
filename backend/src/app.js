@@ -2,11 +2,11 @@ import dotenv from "dotenv";
 dotenv.config();
 
 import express from "express";
-import { coonectDB } from "./lib/db.js";
+import { coonectDB } from "./lib/config/db.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 
-import { ENV } from "./lib/env.js";
+import { ENV } from "./lib/config/env.js";
 
 import authRouter from "./routes/auth.route.js";
 

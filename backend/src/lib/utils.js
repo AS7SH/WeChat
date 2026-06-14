@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ENV } from "./env.js";
+import { ENV } from "./config/env.js";
 
 export const sendResponse = (res, code, success, message, data = null) => {
     return res.status(code).json({
@@ -12,17 +12,21 @@ export const sendResponse = (res, code, success, message, data = null) => {
 export const getOTP = () =>
     Math.floor(100000 + Math.random() * 900000).toString();
 
-export const generateTokenAndSetCookie = (res, userId) => {
-    const token = jwt.sign({ userId }, ENV.JWT_SECRET, {
+export const setJwtAuthCookie = (res, userId) => {
+    const payload = { userId };
+
+    const token = jwt.sign(payload, ENV.JWT_SECRET, {
         expiresIn: "7d",
     });
 
-    res.cookie("token", token, {
+    res.cookie("accessToken", token, {
         httpOnly: true,
-        secure: ENV.NODE_ENV === "production",
-        sameSite: "strict",
+        secure: ENV.NODE_ENV === "production" ? true : false,
+        sameSite: ENV.NODE_ENV === "production" ? "strict" : "lax",
         maxAge: 7 * 24 * 60 * 60 * 1000,
     });
+};
 
-    return token;
+export const clearJwtAuthCookie = (res) => {
+    res.clearCookie("accessToken", { path: "/" });
 };
