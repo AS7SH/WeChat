@@ -14,9 +14,18 @@ import {
     signupService,
     verifyEmailService,
 } from "../services/auth.service.js";
+import {
+    signupSchema,
+    loginSchema,
+    forgotPasswordSchema,
+    resetPasswordSchema,
+    changePasswordSchema,
+} from "../validators/auth.validator.js";
 
 export const signup = asyncHandler(async (req, res) => {
-    const userData = await signupService(req.body);
+    const body = signupSchema.parse(req.body);
+
+    const userData = await signupService(body);
 
     setJwtAuthCookie(res, userData._id);
 
@@ -31,7 +40,6 @@ export const signup = asyncHandler(async (req, res) => {
 
 export const verifyEmail = asyncHandler(async (req, res) => {
     const { code } = req.body;
-
     const user = req.user;
 
     const userData = await verifyEmailService(user, code);
@@ -46,9 +54,7 @@ export const verifyEmail = asyncHandler(async (req, res) => {
 });
 
 export const resendVerification = asyncHandler(async (req, res) => {
-    const user = req.user;
-
-    const userData = await resendVerificationService(user);
+    const userData = await resendVerificationService(req.user);
 
     return sendResponse(
         res,
@@ -60,9 +66,11 @@ export const resendVerification = asyncHandler(async (req, res) => {
 });
 
 export const login = asyncHandler(async (req, res) => {
-    const identifiedItem = req.identifiedItem;
+    const body = loginSchema.parse(req.body);
 
-    const userData = await loginService(req.body, identifiedItem);
+    const identifiedItem = body.identifier.includes("@") ? "email" : "username";
+
+    const userData = await loginService(body, identifiedItem);
 
     setJwtAuthCookie(res, userData._id);
 
@@ -75,13 +83,17 @@ export const logout = asyncHandler(async (req, res) => {
 });
 
 export const forgotPassword = asyncHandler(async (req, res) => {
-    const userData = await forgotPasswordService(req.body);
+    const body = forgotPasswordSchema.parse(req.body);
+
+    const userData = await forgotPasswordService(body);
 
     return sendResponse(res, 200, true, "Email sent successfully", userData);
 });
 
 export const resetPassword = asyncHandler(async (req, res) => {
-    const userData = await resetPasswordService(req.body);
+    const body = resetPasswordSchema.parse(req.body);
+
+    const userData = await resetPasswordService(body);
 
     return sendResponse(
         res,
@@ -93,7 +105,9 @@ export const resetPassword = asyncHandler(async (req, res) => {
 });
 
 export const changePassword = asyncHandler(async (req, res) => {
-    const userData = await changePasswordService(req.body, req.user);
+    const body = changePasswordSchema.parse(req.body);
+
+    const userData = await changePasswordService(body, req.user);
 
     return sendResponse(
         res,
