@@ -1,5 +1,5 @@
 import { AppError } from "../lib/AppError.js";
-import { HTTPSTATUS } from "../lib/http.js";
+import { HTTPSTATUS } from "../utils/utils.js";
 import { User } from "../models/user.model.js";
 
 export const getUsersService = async (userId) => {

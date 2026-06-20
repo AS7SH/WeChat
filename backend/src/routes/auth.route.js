@@ -1,4 +1,4 @@
-import express from "express";
+import { Router } from "express";
 import {
     login,
     logout,
@@ -12,22 +12,16 @@ import {
 } from "../controllers/auth.controller.js";
 import { protectRoute } from "../middlewares/auth.middleware.js";
 
-const router = express.Router();
-
-router.get("/check-auth", protectRoute, checkAuth);
-
-router.post("/signup", signup);
-router.post("/login", login);
-router.post("/logout", logout);
-
-router.post("/verify-email", protectRoute, verifyEmail);
-router.post("/resend-verification", protectRoute, resendVerification);
-
-router.post("/forgot-password", forgotPassword);
-router.post("/reset-password", resetPassword);
+const authRouter = Router()
+    .get("/check-auth", protectRoute, checkAuth)
+    .post("/signup", signup)
+    .post("/login", login)
+    .post("/logout", logout)
+    .post("/verify-email", protectRoute, verifyEmail)
+    .post("/resend-verification", protectRoute, resendVerification)
+    .post("/forgot-password", forgotPassword)
+    .post("/reset-password", resetPassword)
+    .post("/change-password", protectRoute, changePassword);
 
 // router.put("/profile-picture", protectRoute, updateProfilePicture);
-
-router.post("/change-password", protectRoute, changePassword);
-
-export default router;
+export default authRouter;

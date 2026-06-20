@@ -1,28 +1,40 @@
 import dotenv from "dotenv";
 dotenv.config();
 
+import http from "http";
 import express from "express";
-import { coonectDB } from "./lib/config/db.js";
-import cookieParser from "cookie-parser";
 import cors from "cors";
-
-import { ENV } from "./lib/config/env.js";
-
-import authRouter from "./routes/auth.route.js";
+import cookieParser from "cookie-parser";
+import { ENV } from "./config/env.js";
+import router from "./routes/index.js";
+import { coonectDB } from "./config/db.js";
+import { initializeSocket } from "./lib/socket.js";
 import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 
 const app = express();
+const server = http.createServer(app);
 
-app.use(express.json());
+initializeSocket();
+
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(
+    cors({
+        origin: ENV.FRONTEND_ORIGIN,
+        credentials: true,
+    }),
+);
 
 const PORT = ENV.PORT || 3000;
 
-app.use("/api/auth", authRouter);
+//route
+app.use("/api", router);
 
+//error handler
 app.use(errorHandler);
-app.listen(PORT, () => {
+
+server.listen(PORT, () => {
     coonectDB();
     console.log(`Service started at PORT : ${PORT}`);
 });

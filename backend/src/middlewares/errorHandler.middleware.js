@@ -1,5 +1,5 @@
 import z from "zod";
-import { HTTPSTATUS } from "../lib/http.js";
+import { HTTPSTATUS } from "../utils/utils.js";
 
 export const errorHandler = (err, req, res, next) => {
     console.log(`[Error] occured: ${req.path}`, err);

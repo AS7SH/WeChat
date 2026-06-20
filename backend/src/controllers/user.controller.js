@@ -1,8 +1,4 @@
-import {
-    clearJwtAuthCookie,
-    sendResponse,
-    setJwtAuthCookie,
-} from "../lib/utils.js";
+import { sendResponse } from "../utils/utils.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
 import { getUsersService } from "../services/user.service.js";
 
@@ -11,5 +7,5 @@ export const getUsers = asyncHandler(async (req, res) => {
 
     const users = await getUsersService(userId);
 
-    return sendResponse(res, 201, true, "User created successfully", users);
+    return sendResponse(res, 201, true, "User retrieved successfully", users);
 });

@@ -1,7 +1,6 @@
 import { sendForgotPassEmail, sendOTPEmail } from "../emails/mails.js";
 import { AppError } from "../lib/AppError.js";
-import { HTTPSTATUS } from "../lib/http.js";
-import { getOTP } from "../lib/utils.js";
+import { getOTP, HTTPSTATUS } from "../utils/utils.js";
 import { User } from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 
@@ -22,7 +21,9 @@ export const signupService = async ({ username, email, name, password }) => {
         throw new AppError("Username already in use", HTTPSTATUS.BAD_REQUEST);
     }
 
-    const hashPassword = await bcrypt.hash(password, 10);
+    const salt = await bcrypt.genSalt(10);
+
+    const hashPassword = await bcrypt.hash(password, salt);
     const verificationToken = getOTP();
 
     const user = await User.create({

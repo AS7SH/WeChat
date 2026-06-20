@@ -13,21 +13,12 @@ const messageSchema = new mongoose.Schema(
             required: true,
         },
         content: { type: String },
-        ImgURL: { type: String },
+        image: { type: String },
         replyTo: {
             type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
+            ref: "Message",
             default: null,
         },
-        reactions: [
-            {
-                user: {
-                    type: mongoose.Schema.Types.ObjectId,
-                    ref: "User",
-                },
-                type: String,
-            },
-        ],
     },
     { timestamps: true },
 );

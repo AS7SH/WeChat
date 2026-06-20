@@ -1,8 +1,8 @@
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
-import { ENV } from "../lib/config/env.js";
-import { HTTPSTATUS } from "../lib/http.js";
 import { AppError } from "../lib/AppError.js";
+import { HTTPSTATUS } from "../utils/utils.js";
+import { ENV } from "../config/env.js";
 
 export const protectRoute = async (req, res, next) => {
     const token = req.cookies.accessToken;

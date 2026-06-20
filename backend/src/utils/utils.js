@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ENV } from "./config/env.js";
+import { ENV } from "../config/env.js";
 
 export const sendResponse = (res, code, success, message, data = null) => {
     return res.status(code).json({
@@ -29,4 +29,14 @@ export const setJwtAuthCookie = (res, userId) => {
 
 export const clearJwtAuthCookie = (res) => {
     res.clearCookie("accessToken", { path: "/" });
+};
+
+export const HTTPSTATUS = {
+    OK: 200,
+    CREATED: 201,
+    BAD_REQUEST: 400,
+    UNAUTHORIZED: 401,
+    FORBIDDEN: 403,
+    NOT_FOUND: 404,
+    INTERNAL_SERVER_ERROR: 500,
 };

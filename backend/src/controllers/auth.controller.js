@@ -1,9 +1,9 @@
-import { HTTPSTATUS } from "../lib/http.js";
+import { HTTPSTATUS } from "../utils/utils.js";
 import {
     clearJwtAuthCookie,
     sendResponse,
     setJwtAuthCookie,
-} from "../lib/utils.js";
+} from "../utils/utils.js";
 import { asyncHandler } from "../middlewares/asyncHandler.middleware.js";
 import {
     changePasswordService,

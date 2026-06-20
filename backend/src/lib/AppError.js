@@ -1,4 +1,4 @@
-import { HTTPSTATUS } from "./http.js";
+import { HTTPSTATUS } from "../utils/utils.js";
 
 export class AppError extends Error {
     constructor(message, statusCode = HTTPSTATUS.INTERNAL_SERVER_ERROR) {
