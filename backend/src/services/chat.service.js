@@ -2,6 +2,7 @@ import { User } from "../models/user.model.js";
 import { Chat } from "../models/chat.model.js";
 import { AppError } from "../lib/AppError.js";
 import { Message } from "../models/message.model.js";
+import { emitNewChatToParticipants } from "../lib/socket.js";
 
 export const createChatService = async (userId, body) => {
     const { participantId, isGroup, participants, groupName } = body;
@@ -42,6 +43,13 @@ export const createChatService = async (userId, body) => {
             createdBy: userId,
         });
     }
+
+    const populatedChat = chat?.populate("participants", "name avatar");
+    const participantIdStrings = populatedChat?.participants?.map((p) => {
+        return p?._id.toString();
+    });
+
+    emitNewChatToParticipants(allParticipantIds, populatedChat);
 
     return chat;
 };
@@ -92,4 +100,16 @@ export const getSingleChatService = async (chatId, userId) => {
         .sort({ createdAt: 1 });
 
     return { chat, messages };
+};
+
+export const validateChatPariticipant = async (chatId, userId) => {
+    const chat = await Chat.findOne({
+        _id: chatId,
+        participants: {
+            $in: [userId],
+        },
+    });
+
+    if (!chat) throw new AppError("user not a pariticipants in chat");
+    return chat;
 };

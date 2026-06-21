@@ -2,6 +2,10 @@ import { Chat } from "../models/chat.model.js";
 import { Message } from "../models/message.model.js";
 import { AppError } from "../lib/AppError.js";
 import cloudinary from "../config/cloudinary.js";
+import {
+    emitLastMessageToChatRoom,
+    emitLastMessageToPariticipants,
+} from "../lib/socket.js";
 
 export const sendMessageService = async (userId, body) => {
     const { chatId, content, image, replyToId } = body;
@@ -59,6 +63,14 @@ export const sendMessageService = async (userId, body) => {
             },
         },
     ]);
+
+    chat.lastMessage = newMessage?._id;
+    await chat.save();
+
+    emitLastMessageToChatRoom(userId, chatId, lastMessage);
+
+    const allParticipantIds = chat.participants.map((id) => id.toString());
+    emitLastMessageToPariticipants(allParticipantIds, chatId, newMessage);
 
     return { userMessage: newMessage, chat };
 };

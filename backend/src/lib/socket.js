@@ -1,4 +1,3 @@
-import { Server as HTTPServer } from "http";
 import { Server } from "socket.io";
 import { ENV } from "../config/env.js";
 import jwt from "jsonwebtoken";
@@ -50,5 +49,72 @@ export const initializeSocket = (httpServer) => {
         onlineUsers.set(userId, socketId);
 
         io?.emit("online:users", Array.from(onlineUsers.keys()));
+
+        socket.join(`user: ${userId}`);
+
+        socket.on("chat:join", async (chatId, callback) => {
+            try {
+                await validateChatPariticipant(chatId, userId);
+                socket.join(`chat:${chatId}`);
+                callback?.();
+            } catch (error) {
+                callback?.("Error joining chat");
+            }
+        });
+
+        socket.on("chat:leave", (chatId) => {
+            if (chatId) {
+                socket.leave(`chat:${chatId}`);
+                console.log(`User: ${userId} left room chat ${chatId}`);
+            }
+        });
+
+        socket.on("disconnect", () => {
+            if (onlineUsers.get(userId) === socketId) {
+                if (userId) onlineUsers.delete(userId);
+
+                io?.emit("online:users", Array.from(onlineUsers.keys()));
+
+                console.log(`socket disconnected: ${(userId, socketId)}`);
+            }
+        });
     });
+};
+
+const getIO = () => {
+    if (!io) throw new Error("Socket io not initialized");
+    return io;
+};
+
+export const emitNewChatToParticipants = (allParticipantIds, chat) => {
+    const io = getIO();
+    for (const participantId of allParticipantIds) {
+        io.to(`user:${participantId}`).emit("chat:new", chat);
+    }
+};
+
+export const emitLastMessageToChatRoom = (userId, chatId, message) => {
+    const io = getIO();
+    const senderSocketId = onlineUsers.get(userId);
+
+    if (senderSocketId) {
+        io.to(`chat:${chatId}`)
+            .except(senderSocketId)
+            .emit(`message:new`, message);
+    } else {
+        io.to(`chat:${chatId}`).emit(`message:new`, message);
+    }
+};
+
+export const emitLastMessageToPariticipants = (
+    allParticipantIds,
+    chatId,
+    lastMessage,
+) => {
+    const io = getIO();
+    const payload = { chatId, lastMessage };
+
+    for (const participantId of allParticipantIds) {
+        io.to(`user:${participantId}`).emit(`chat:update`, payload);
+    }
 };

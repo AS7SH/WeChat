@@ -14,7 +14,7 @@ import { errorHandler } from "./middlewares/errorHandler.middleware.js";
 const app = express();
 const server = http.createServer(app);
 
-initializeSocket();
+initializeSocket(server);
 
 app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
