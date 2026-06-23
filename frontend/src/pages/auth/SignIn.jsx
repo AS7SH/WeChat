@@ -27,7 +27,6 @@ const SignIn = () => {
         try {
             const response = await login(data);
             toast.success(response?.message || "Logged in successfully!");
-            navigate("/");
         } catch (error) {
             console.error(error);
         }

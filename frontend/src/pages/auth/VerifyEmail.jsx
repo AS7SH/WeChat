@@ -1,12 +1,10 @@
 import { useRef, useState } from "react";
-import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth.js";
 import { toast } from "sonner";
 
 const VerifyEmail = () => {
     const [otp, setOtp] = useState(["", "", "", "", "", ""]);
     const inputRefs = useRef([]);
-    const navigate = useNavigate();
 
     const {
         user,
@@ -77,7 +75,6 @@ const VerifyEmail = () => {
             console.log(code);
             const response = await verifyEmail(code);
             toast.success(response?.message || "Email verified!");
-            navigate("/");
         } catch (error) {
             console.error(error);
         }

@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { useAuth } from "@/hooks/useAuth"; // Updated to match your auth hook path
 import { toast } from "sonner"; // Using sonner to match SignUp
 import { Check, X, Loader } from "lucide-react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");

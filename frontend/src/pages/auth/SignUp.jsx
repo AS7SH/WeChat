@@ -46,7 +46,6 @@ const SignUp = () => {
         try {
             const response = await signup(data);
             toast.success(response?.message || "Account created!");
-            navigate("/auth/verify-email");
         } catch (error) {
             console.log("Component caught error:", error);
         }

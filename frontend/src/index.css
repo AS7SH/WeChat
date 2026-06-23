@@ -97,21 +97,6 @@ input:-webkit-autofill,
 input:-webkit-autofill:hover,
 input:-webkit-autofill:focus,
 input:-webkit-autofill:active {
-    /* This delays the background color change for 5000 seconds */
     transition: background-color 5000s ease-in-out 0s;
-
-    /* This ensures your text color stays correct (adjust if your text isn't white) */
     -webkit-text-fill-color: white !important;
-}
-
-@layer base {
-    * {
-        @apply border-border outline-ring/50;
-    }
-    body {
-        @apply bg-background text-foreground;
-    }
-    html {
-        @apply font-sans;
-    }
 }

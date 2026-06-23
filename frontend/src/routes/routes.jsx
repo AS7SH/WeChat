@@ -1,5 +1,4 @@
-import { SignIn, SignUp, VerifyEmail } from "@/pages/auth";
-import ForgotPassword from "@/pages/auth/ForgotPassword";
+import { ForgotPassword, SignIn, SignUp, VerifyEmail } from "@/pages/auth";
 import Chat from "@/pages/chat";
 import SingleChat from "@/pages/chat/chatId";
 
@@ -12,7 +11,7 @@ export const AUTH_ROUTES = {
 
 export const PROTECTED_ROUTES = {
     CHAT: "/chat",
-    SINGLE_CHAT: "/chat:chatId",
+    SINGLE_CHAT: "/chat/:chatId",
 };
 
 export const authRoutePaths = [
@@ -36,11 +35,11 @@ export const authRoutePaths = [
 
 export const protectedRoutePaths = [
     {
-        path: AUTH_ROUTES.CHAT,
+        path: PROTECTED_ROUTES.CHAT,
         element: <Chat />,
     },
     {
-        path: AUTH_ROUTES.SINGLE_CHAT,
+        path: PROTECTED_ROUTES.SINGLE_CHAT,
         element: <SingleChat />,
     },
 ];
