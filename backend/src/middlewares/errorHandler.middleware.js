@@ -5,12 +5,18 @@ export const errorHandler = (err, req, res, next) => {
     console.log(`[Error] occured: ${req.path}`, err);
 
     if (err instanceof z.ZodError) {
-        const formattedErrors = z.treeifyError(err);
+        const validationIssues = err.issues || err.errors || [];
+        const firstErrorMessage =
+            validationIssues[0]?.message || "Validation failed";
+        console.log(firstErrorMessage);
 
         return res.status(HTTPSTATUS.BAD_REQUEST).json({
             success: false,
-            message: "Validation failed",
-            errors: formattedErrors,
+            message: firstErrorMessage,
+            errors:
+                typeof err.flatten === "function"
+                    ? z.treeifyError(err)
+                    : validationIssues,
         });
     }
 

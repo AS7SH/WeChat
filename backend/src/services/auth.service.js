@@ -59,8 +59,8 @@ export const verifyEmailService = async (user, code) => {
     }
 
     user.isVerified = true;
-    user.verificationToken = undefined;
-    user.verificationTokenExpiresAt = undefined;
+    user.verificationToken = null;
+    user.verificationTokenExpiresAt = null;
 
     await user.save();
 

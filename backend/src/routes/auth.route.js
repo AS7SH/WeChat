@@ -13,7 +13,7 @@ import {
 import { protectRoute } from "../middlewares/auth.middleware.js";
 
 const authRouter = Router()
-    .get("/check-auth", protectRoute, checkAuth)
+    .get("/status", protectRoute, checkAuth)
     .post("/signup", signup)
     .post("/login", login)
     .post("/logout", logout)
