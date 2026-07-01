@@ -134,185 +134,179 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="flex h-screen w-screen items-center justify-center overflow-hidden bg-bg-light p-4">
-            <div className="w-full max-w-md rounded-3xl border border-border p-6 shadow-sm bg-bg-light">
-                {/* Header */}
-                <div className="mb-6 text-center">
-                    <h1 className="text-3xl font-semibold text-text">
-                        Forgot Password
-                    </h1>
-                    <p className="mt-2 text-sm text-text-muted">
-                        {!otpSent
-                            ? "Enter your email address and we'll send you a verification code."
-                            : "Enter the verification code sent to your email."}
-                    </p>
-                </div>
+        <div className="w-full max-w-md rounded-3xl border border-border p-6 shadow-sm bg-bg-light">
+            {/* Header */}
+            <div className="mb-6 text-center">
+                <h1 className="text-3xl font-semibold text-text">
+                    Forgot Password
+                </h1>
+                <p className="mt-2 text-sm text-text-muted">
+                    {!otpSent
+                        ? "Enter your email address and we'll send you a verification code."
+                        : "Enter the verification code sent to your email."}
+                </p>
+            </div>
 
-                <form onSubmit={handleSubmit} className="space-y-4">
-                    {!otpSent ? (
-                        <>
-                            {/* Email */}
-                            <div>
-                                <input
-                                    id="email"
-                                    type="email"
-                                    value={email}
-                                    onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="Enter your email"
-                                    className="h-12 w-full rounded-xl border border-border bg-transparent px-4 text-text outline-none transition-colors focus:border-primary"
-                                    required
-                                />
+            <form onSubmit={handleSubmit} className="space-y-4">
+                {!otpSent ? (
+                    <>
+                        {/* Email */}
+                        <div>
+                            <input
+                                id="email"
+                                type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                placeholder="Enter your email"
+                                className="h-12 w-full rounded-xl border border-border bg-transparent px-4 text-text outline-none transition-colors focus:border-primary"
+                                required
+                            />
+                        </div>
+
+                        {/* Button */}
+                        <div className="mt-6">
+                            <button
+                                type="button"
+                                onClick={handleSendOtp}
+                                disabled={!email.trim() || isResetPassLoading}
+                                className={`mt-2 flex h-12 w-full items-center justify-center rounded-full font-medium text-white transition-opacity ${
+                                    email.trim() && !isResetPassLoading
+                                        ? "bg-primary hover:opacity-90 cursor-pointer"
+                                        : "cursor-not-allowed bg-gray-500 opacity-60"
+                                }`}
+                            >
+                                {isResetPassLoading ? (
+                                    <Loader className="size-5 animate-spin" />
+                                ) : (
+                                    "Send Verification Code"
+                                )}
+                            </button>
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        {/* Target Email Display */}
+                        <div className="rounded-2xl border border-border bg-gray-50/5 p-4 text-center">
+                            <p className="text-sm text-text-muted">
+                                Verification code sent to
+                            </p>
+                            <p className="mt-1 font-medium text-text">
+                                {email}
+                            </p>
+                        </div>
+
+                        {/* OTP Inputs */}
+                        <div className="pt-2">
+                            <div
+                                className="flex justify-between gap-2 sm:gap-3"
+                                onPaste={handlePaste}
+                            >
+                                {otp.map((digit, index) => (
+                                    <input
+                                        key={index}
+                                        ref={(el) =>
+                                            (inputRefs.current[index] = el)
+                                        }
+                                        type="text"
+                                        inputMode="numeric"
+                                        maxLength={1}
+                                        value={digit}
+                                        onChange={(e) =>
+                                            handleOtpChange(
+                                                index,
+                                                e.target.value,
+                                            )
+                                        }
+                                        onKeyDown={(e) =>
+                                            handleKeyDown(index, e)
+                                        }
+                                        className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl border border-border bg-transparent text-center text-xl font-medium text-text outline-none transition-colors focus:border-primary"
+                                    />
+                                ))}
                             </div>
+                        </div>
 
-                            {/* Button */}
-                            <div className="mt-6">
+                        {/* New Password */}
+                        <div className="pt-2">
+                            <input
+                                type="password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                placeholder="Create a new password"
+                                className="h-12 w-full rounded-xl border border-border bg-transparent px-4 text-text outline-none transition-colors focus:border-primary"
+                            />
+
+                            {/* Modern Password Toolkit Checklist */}
+                            <div className="mt-3 grid grid-cols-2 space-y-2 rounded-xl bg-gray-50/5 p-3 text-xs">
+                                {passwordRequirements.map((req, index) => (
+                                    <div
+                                        key={index}
+                                        className={`flex items-center gap-2 transition-colors duration-300 ${
+                                            req.isMet
+                                                ? "text-green-500"
+                                                : "text-text-muted"
+                                        }`}
+                                    >
+                                        {req.isMet ? (
+                                            <Check className="size-4" />
+                                        ) : (
+                                            <X className="size-4 opacity-50" />
+                                        )}
+                                        <span>{req.label}</span>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        {/* Change Password Button */}
+                        <div className="mt-6">
+                            <button
+                                type="submit"
+                                disabled={!canSubmit || isResetPassLoading}
+                                className={`mt-2 flex h-12 w-full items-center justify-center rounded-full font-medium text-white transition-opacity ${
+                                    canSubmit && !isResetPassLoading
+                                        ? "bg-primary hover:opacity-90 cursor-pointer"
+                                        : "cursor-not-allowed bg-gray-500 opacity-60"
+                                }`}
+                            >
+                                {isResetPassLoading ? (
+                                    <Loader className="size-5 animate-spin" />
+                                ) : (
+                                    "Change Password"
+                                )}
+                            </button>
+                        </div>
+
+                        {/* Resend Code */}
+                        <div className="text-center pt-2">
+                            <p className="text-sm text-text-muted">
+                                Didn't receive the code?{" "}
                                 <button
                                     type="button"
+                                    disabled={isResetPassLoading}
                                     onClick={handleSendOtp}
-                                    disabled={
-                                        !email.trim() || isResetPassLoading
-                                    }
-                                    className={`mt-2 flex h-12 w-full items-center justify-center rounded-full font-medium text-white transition-opacity ${
-                                        email.trim() && !isResetPassLoading
-                                            ? "bg-primary hover:opacity-90 cursor-pointer"
-                                            : "cursor-not-allowed bg-gray-500 opacity-60"
-                                    }`}
+                                    className="font-medium cursor-pointer text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
                                 >
-                                    {isResetPassLoading ? (
-                                        <Loader className="size-5 animate-spin" />
-                                    ) : (
-                                        "Send Verification Code"
-                                    )}
+                                    Resend Code
                                 </button>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            {/* Target Email Display */}
-                            <div className="rounded-2xl border border-border bg-gray-50/5 p-4 text-center">
-                                <p className="text-sm text-text-muted">
-                                    Verification code sent to
-                                </p>
-                                <p className="mt-1 font-medium text-text">
-                                    {email}
-                                </p>
-                            </div>
+                            </p>
+                        </div>
+                    </>
+                )}
+            </form>
 
-                            {/* OTP Inputs */}
-                            <div className="pt-2">
-                                <div
-                                    className="flex justify-between gap-2 sm:gap-3"
-                                    onPaste={handlePaste}
-                                >
-                                    {otp.map((digit, index) => (
-                                        <input
-                                            key={index}
-                                            ref={(el) =>
-                                                (inputRefs.current[index] = el)
-                                            }
-                                            type="text"
-                                            inputMode="numeric"
-                                            maxLength={1}
-                                            value={digit}
-                                            onChange={(e) =>
-                                                handleOtpChange(
-                                                    index,
-                                                    e.target.value,
-                                                )
-                                            }
-                                            onKeyDown={(e) =>
-                                                handleKeyDown(index, e)
-                                            }
-                                            className="h-12 w-12 sm:h-14 sm:w-14 rounded-xl border border-border bg-transparent text-center text-xl font-medium text-text outline-none transition-colors focus:border-primary"
-                                        />
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* New Password */}
-                            <div className="pt-2">
-                                <input
-                                    type="password"
-                                    value={password}
-                                    onChange={(e) =>
-                                        setPassword(e.target.value)
-                                    }
-                                    placeholder="Create a new password"
-                                    className="h-12 w-full rounded-xl border border-border bg-transparent px-4 text-text outline-none transition-colors focus:border-primary"
-                                />
-
-                                {/* Modern Password Toolkit Checklist */}
-                                <div className="mt-3 grid grid-cols-2 space-y-2 rounded-xl bg-gray-50/5 p-3 text-xs">
-                                    {passwordRequirements.map((req, index) => (
-                                        <div
-                                            key={index}
-                                            className={`flex items-center gap-2 transition-colors duration-300 ${
-                                                req.isMet
-                                                    ? "text-green-500"
-                                                    : "text-text-muted"
-                                            }`}
-                                        >
-                                            {req.isMet ? (
-                                                <Check className="size-4" />
-                                            ) : (
-                                                <X className="size-4 opacity-50" />
-                                            )}
-                                            <span>{req.label}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-
-                            {/* Change Password Button */}
-                            <div className="mt-6">
-                                <button
-                                    type="submit"
-                                    disabled={!canSubmit || isResetPassLoading}
-                                    className={`mt-2 flex h-12 w-full items-center justify-center rounded-full font-medium text-white transition-opacity ${
-                                        canSubmit && !isResetPassLoading
-                                            ? "bg-primary hover:opacity-90 cursor-pointer"
-                                            : "cursor-not-allowed bg-gray-500 opacity-60"
-                                    }`}
-                                >
-                                    {isResetPassLoading ? (
-                                        <Loader className="size-5 animate-spin" />
-                                    ) : (
-                                        "Change Password"
-                                    )}
-                                </button>
-                            </div>
-
-                            {/* Resend Code */}
-                            <div className="text-center pt-2">
-                                <p className="text-sm text-text-muted">
-                                    Didn't receive the code?{" "}
-                                    <button
-                                        type="button"
-                                        disabled={isResetPassLoading}
-                                        onClick={handleSendOtp}
-                                        className="font-medium cursor-pointer text-primary hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
-                                    >
-                                        Resend Code
-                                    </button>
-                                </p>
-                            </div>
-                        </>
-                    )}
-                </form>
-
-                {/* Footer */}
-                <div className="mt-6 border-t border-border pt-5 text-center">
-                    <p className="text-sm text-text-muted">
-                        Remember your password?{" "}
-                        <button
-                            type="button"
-                            onClick={() => navigate("/auth/login")}
-                            className="font-medium cursor-pointer text-primary hover:underline"
-                        >
-                            Login
-                        </button>
-                    </p>
-                </div>
+            {/* Footer */}
+            <div className="mt-6 border-t border-border pt-5 text-center">
+                <p className="text-sm text-text-muted">
+                    Remember your password?{" "}
+                    <button
+                        type="button"
+                        onClick={() => navigate("/auth/login")}
+                        className="font-medium cursor-pointer text-primary hover:underline"
+                    >
+                        Login
+                    </button>
+                </p>
             </div>
         </div>
     );

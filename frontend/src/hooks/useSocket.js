@@ -7,6 +7,7 @@ const BASE_URL =
 export const useSocket = create((set, get) => ({
     socket: null,
     onlineUsers: [],
+
     connectSocket: () => {
         const { socket } = get();
         if (socket?.connected) return;
@@ -23,11 +24,10 @@ export const useSocket = create((set, get) => ({
         });
 
         newSocket.on("online:users", (userIds) => {
-            console.log(`user Ids: ${userIds}`);
             set({ onlineUsers: userIds });
         });
     },
-    disconnetSocket: () => {
+    disconnectSocket: () => {
         const { socket } = get();
         if (socket) {
             socket.disconnect();

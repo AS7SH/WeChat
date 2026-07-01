@@ -1,13 +1,17 @@
+import Navbar from "@/components/Navbar";
 import { Outlet } from "react-router-dom";
 
 const BaseLayout = () => {
     return (
-        <div className="flex flex-col w-full h-auto">
-            <div className="w-full h-full flex justify-center items-center">
-                <div className="w-full h-auto mx-auto">
+        <div className="min-h-screen flex flex-col bg-bg">
+            <Navbar />
+
+            {/* flex-1 forces this container to fill the remaining height minus the Navbar */}
+            <main className="flex-1 flex justify-center items-center p-4">
+                <div className="w-full max-w-md">
                     <Outlet />
                 </div>
-            </div>
+            </main>
         </div>
     );
 };

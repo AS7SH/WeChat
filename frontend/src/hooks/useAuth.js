@@ -117,10 +117,12 @@ export const useAuth = create((set, get) => ({
 
     logout: async () => {
         try {
-            await API.post("/auth/logout");
-            useSocket.getState().disconnectSocket();
+            const response = await API.post("/auth/logout");
+            useSocket.getState()?.disconnectSocket();
+            return response?.data;
         } catch (error) {
             toast.error(error?.response?.data?.message || "Logout Failed");
+            throw error;
         } finally {
             set({ user: null });
         }

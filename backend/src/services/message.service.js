@@ -67,7 +67,7 @@ export const sendMessageService = async (userId, body) => {
     chat.lastMessage = newMessage?._id;
     await chat.save();
 
-    emitLastMessageToChatRoom(userId, chatId, lastMessage);
+    emitLastMessageToChatRoom(userId, chatId, chat.lastMessage);
 
     const allParticipantIds = chat.participants.map((id) => id.toString());
     emitLastMessageToPariticipants(allParticipantIds, chatId, newMessage);

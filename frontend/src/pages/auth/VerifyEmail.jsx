@@ -81,84 +81,77 @@ const VerifyEmail = () => {
     };
 
     return (
-        <div className="flex h-screen w-screen items-center justify-center overflow-hidden bg-bg-light p-4">
-            {/* Form Container: Added max-w-md to keep it looking good on large screens */}
-            <div className="w-full max-w-md rounded-3xl border border-border p-6 shadow-sm">
-                {/* Heading */}
-                <div className="mb-8 text-center">
-                    <h1 className="text-4xl font-normal text-text">
-                        Verify Email
-                    </h1>
+        <div className="w-full max-w-md rounded-3xl border border-border p-6 shadow-sm">
+            {/* Heading */}
+            <div className="mb-8 text-center">
+                <h1 className="text-4xl font-normal text-text">Verify Email</h1>
 
-                    <p className="mt-3 text-text-muted">
-                        We've sent a verification code to
-                    </p>
+                <p className="mt-3 text-text-muted">
+                    We've sent a verification code to
+                </p>
 
-                    <p className="mt-1 font-medium text-text">{user?.email}</p>
+                <p className="mt-1 font-medium text-text">{user?.email}</p>
+            </div>
+
+            <form onSubmit={handleSubmit}>
+                {/* OTP Inputs */}
+                <div
+                    className="mb-8 flex justify-center gap-3"
+                    onPaste={handlePaste}
+                >
+                    {otp.map((digit, index) => (
+                        <input
+                            key={index}
+                            ref={(el) => (inputRefs.current[index] = el)}
+                            type="text"
+                            inputMode="numeric"
+                            maxLength={1}
+                            value={digit}
+                            disabled={isVerifyLoading} // Lock inputs while submitting
+                            onChange={(e) =>
+                                handleChange(index, e.target.value)
+                            }
+                            onKeyDown={(e) => handleKeyDown(index, e)}
+                            className={`h-14 w-14 rounded-xl border bg-transparent text-center text-xl font-medium text-text outline-none transition-colors focus:border-primary ${
+                                isVerifyLoading
+                                    ? "opacity-50 cursor-not-allowed border-border"
+                                    : "border-border"
+                            }`}
+                        />
+                    ))}
                 </div>
 
-                <form onSubmit={handleSubmit}>
-                    {/* OTP Inputs */}
-                    <div
-                        className="mb-8 flex justify-center gap-3"
-                        onPaste={handlePaste}
-                    >
-                        {otp.map((digit, index) => (
-                            <input
-                                key={index}
-                                ref={(el) => (inputRefs.current[index] = el)}
-                                type="text"
-                                inputMode="numeric"
-                                maxLength={1}
-                                value={digit}
-                                disabled={isVerifyLoading} // Lock inputs while submitting
-                                onChange={(e) =>
-                                    handleChange(index, e.target.value)
-                                }
-                                onKeyDown={(e) => handleKeyDown(index, e)}
-                                className={`h-14 w-14 rounded-xl border bg-transparent text-center text-xl font-medium text-text outline-none transition-colors focus:border-primary ${
-                                    isVerifyLoading
-                                        ? "opacity-50 cursor-not-allowed border-border"
-                                        : "border-border"
-                                }`}
-                            />
-                        ))}
-                    </div>
+                {/* Verify Button */}
+                <button
+                    type="submit"
+                    disabled={isVerifyLoading || otp.join("").length !== 6} // Prevent submission if loading or incomplete
+                    className={`h-12 w-full rounded-full bg-primary font-medium text-white transition-opacity ${
+                        isVerifyLoading || otp.join("").length !== 6
+                            ? "cursor-not-allowed opacity-60"
+                            : "cursor-pointer hover:opacity-90"
+                    }`}
+                >
+                    {isVerifyLoading ? "Verifying..." : "Verify Email"}
+                </button>
+            </form>
 
-                    {/* Verify Button */}
+            {/* Footer */}
+            <div className="mt-6 border-t border-border pt-5 text-center">
+                <p className="text-sm text-text-muted">
+                    Didn't receive the code?{" "}
                     <button
-                        type="submit"
-                        disabled={isVerifyLoading || otp.join("").length !== 6} // Prevent submission if loading or incomplete
-                        className={`h-12 w-full rounded-full bg-primary font-medium text-white transition-opacity ${
-                            isVerifyLoading || otp.join("").length !== 6
+                        type="button"
+                        onClick={handleResendCode}
+                        disabled={isResendEmailLoading} // Fixed: Swapped isLoading for isResendEmailLoading
+                        className={`text-sm font-medium text-primary transition-opacity ${
+                            isResendEmailLoading
                                 ? "cursor-not-allowed opacity-60"
-                                : "cursor-pointer hover:opacity-90"
+                                : "cursor-pointer hover:underline"
                         }`}
                     >
-                        {isVerifyLoading ? "Verifying..." : "Verify Email"}
+                        {isResendEmailLoading ? "Sending..." : "Resend Code"}
                     </button>
-                </form>
-
-                {/* Footer */}
-                <div className="mt-6 border-t border-border pt-5 text-center">
-                    <p className="text-sm text-text-muted">
-                        Didn't receive the code?{" "}
-                        <button
-                            type="button"
-                            onClick={handleResendCode}
-                            disabled={isResendEmailLoading} // Fixed: Swapped isLoading for isResendEmailLoading
-                            className={`text-sm font-medium text-primary transition-opacity ${
-                                isResendEmailLoading
-                                    ? "cursor-not-allowed opacity-60"
-                                    : "cursor-pointer hover:underline"
-                            }`}
-                        >
-                            {isResendEmailLoading
-                                ? "Sending..."
-                                : "Resend Code"}
-                        </button>
-                    </p>
-                </div>
+                </p>
             </div>
         </div>
     );

@@ -4,19 +4,23 @@ import { useAuth } from "./hooks/useAuth";
 import AppRoutes from "./routes";
 import Logo from "./components/Logo";
 import { Spinner } from "./components/ui/spinner";
+import { useSocket } from "./hooks/useSocket";
 
 function App() {
     const { user, isAuthStatus, isAuthStatusLoading } = useAuth();
+    const { onlineUsers } = useSocket();
+
+    console.log(`onlineUsers: [${onlineUsers}]`);
 
     useEffect(() => {
+        if (user) return;
         isAuthStatus();
-    }, [isAuthStatus]);
+    }, [user, isAuthStatus]);
 
     if (isAuthStatusLoading && !user) {
         return (
             <div className="flex flex-col justify-center items-center h-screen">
-                <Logo imgClass="size-20" showText={false} />
-                <Spinner className={"w-6 h-6"} />
+                <Spinner className={"w-10 h-10"} />
             </div>
         );
     }

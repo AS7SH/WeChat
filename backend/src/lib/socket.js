@@ -50,7 +50,7 @@ export const initializeSocket = (httpServer) => {
 
         io?.emit("online:users", Array.from(onlineUsers.keys()));
 
-        socket.join(`user: ${userId}`);
+        socket.join(`user:${userId}`);
 
         socket.on("chat:join", async (chatId, callback) => {
             try {
